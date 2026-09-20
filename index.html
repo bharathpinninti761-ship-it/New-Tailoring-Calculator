@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mom's Tailoring Billing Assistant</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>Tailoring Assistant 🧵</h1>
+            <button id="toggle-edit-btn" class="secondary-btn">✏️ Edit Services</button>
+        </header>
+
+        <!-- Edit Services Modal/Section -->
+        <div id="edit-services-section" class="card hidden">
+            <h3>Manage Services</h3>
+            <form id="add-service-form">
+                <input type="text" id="new-service-name" placeholder="Service Name (e.g., Designer Blouse)" required>
+                <input type="number" id="new-service-price" placeholder="Price (₹)" required min="0">
+                <button type="submit" class="primary-btn">Add Service</button>
+            </form>
+            <ul id="edit-services-list">
+                <!-- Dynamic List of Services with Delete Buttons -->
+            </ul>
+        </div>
+
+        <div class="main-layout">
+            <!-- Left Side: Selection and Billing -->
+            <div class="billing-area">
+                <!-- Services Tapping Panel -->
+                <div class="card">
+                    <h3>Tap to Add Items</h3>
+                    <div id="services-grid" class="grid">
+                        <!-- Dynamic Service Buttons go here -->
+                    </div>
+                </div>
+
+                <!-- Current Bill Items -->
+                <div class="card">
+                    <h3>Current Bill Items</h3>
+                    <ul id="current-items-list" class="bill-list">
+                        <!-- Added items appear here -->
+                    </ul>
+                    <button id="clear-current-btn" class="danger-btn text-link">Clear Current Items</button>
+                </div>
+            </div>
+
+            <!-- Right Side: Calculations and Summary -->
+            <div class="summary-area">
+                <div class="card calculation-card">
+                    <h3>Bill Summary</h3>
+                    
+                    <div class="calc-row">
+                        <span>Subtotal:</span>
+                        <span id="subtotal-val">₹0</span>
+                    </div>
+                    
+                    <div class="calc-row">
+                        <label for="discount-input">Discount (₹):</label>
+                        <input type="number" id="discount-input" value="0" min="0">
+                    </div>
+                    
+                    <div class="calc-row">
+                        <label for="advance-input">Advance Paid (₹):</label>
+                        <input type="number" id="advance-input" value="0" min="0">
+                    </div>
+                    
+                    <div class="calc-row total-row">
+                        <span>Balance Due:</span>
+                        <span id="total-val">₹0</span>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button id="save-bill-btn" class="primary-btn action-btn">💾 Save Bill to Income</button>
+                        <button id="share-bill-btn" class="secondary-btn action-btn">📤 Share Bill Summary</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Income Log History -->
+        <div class="card income-log-section">
+            <div class="log-header">
+                <h3>📈 Income Log & History</h3>
+                <div class="total-earnings">Total Earnings: <span id="total-earnings-val">₹0</span></div>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Items</th>
+                            <th>Subtotal</th>
+                            <th>Discount</th>
+                            <th>Advance</th>
+                            <th>Balance</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="income-log-body">
+                        <!-- Saved rows go here -->
+                    </tbody>
+                </table>
+            </div>
+            <button id="clear-history-btn" class="danger-btn text-link hidden">Clear All Log History</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
