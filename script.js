@@ -199,7 +199,7 @@ function deleteLogEntry(index) {
 
 // Setup Event Listeners
 function setupEventListeners() {
-    // Dark Mode Toggle Logic Engagement Loop
+    // Dark Mode Toggle Logic
     if (darkModeBtn) {
         darkModeBtn.addEventListener('click', () => {
             isDarkMode = !isDarkMode;
@@ -262,9 +262,8 @@ function setupEventListeners() {
 
             let subtotal = 0;
             const summaryArr = currentBill.map(item => {
-        const summaryArr = currentBill.map(item => {
-            subtotal += item.price * item.quantity;
-            return `${item.name} (${item.quantity})`;
+                subtotal += item.price * item.quantity;
+                            return `${item.name} (${item.quantity})`;
         });
 
         const discount = parseFloat(discountInput.value) || 0;
@@ -343,3 +342,4 @@ if (clearHistoryBtn) {
 
 // Run Application Execution
 init();
+
