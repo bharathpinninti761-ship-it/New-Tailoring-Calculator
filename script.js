@@ -266,3 +266,60 @@ function setupEventListeners() {
             
             currentBill = [];
             discountInput.value = 0;
+            advanceInput.value = 0;
+                        renderBill();
+            renderIncomeLog();
+            alert("🎉 Bill successfully logged to history and saved!");
+        });
+    }
+
+    if (shareBillBtn) {
+        shareBillBtn.addEventListener('click', () => {
+            if (currentBill.length === 0) {
+                alert("No data items generated yet to compile a text summary.");
+                return;
+            }
+            
+            let subtotal = 0;
+            let textSummary = `--- Tailor Bill Receipt ---\n`;
+            currentBill.forEach(item => {
+                subtotal += item.price * item.quantity;
+                textSummary += `• ${item.name} x${item.quantity}: ₹${item.price * item.quantity}\n`;
+            });
+            
+            const disc = parseFloat(discountInput.value) || 0;
+            const adv = parseFloat(advanceInput.value) || 0;
+            let bal = subtotal - disc - adv;
+            if (bal < 0) bal = 0;
+
+            textSummary += `-------------------------\n`;
+            textSummary += `Subtotal: ₹${subtotal}\n`;
+            if(disc > 0) textSummary += `Discount: -₹${disc}\n`;
+            if(adv > 0) textSummary += `Advance Paid: -₹${adv}\n`;
+            textSummary += `Balance Due: ₹${bal}\n`;
+            textSummary += `Thank you! ✨`;
+
+            if (navigator.share) {
+                navigator.share({ title: 'Tailoring Receipt', text: textSummary })
+                    .catch(err => console.log(err));
+            } else {
+                navigator.clipboard.writeText(textSummary);
+                alert("📋 Summary copied to your clipboard! You can paste it right into WhatsApp.");
+            }
+        });
+    }
+
+    if (clearHistoryBtn) {
+        clearHistoryBtn.addEventListener('click', () => {
+            if (confirm("Are you sure you want to permanently clear the whole history summary logs? This cannot be undone.")) {
+                incomeLog = [];
+                localStorage.removeItem('tailor_income_log');
+                renderIncomeLog();
+            }
+        });
+    }
+}
+
+// Fire up calculations on initial execution loop
+init();
+
