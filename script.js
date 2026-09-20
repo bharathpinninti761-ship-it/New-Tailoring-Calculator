@@ -266,5 +266,3 @@ function setupEventListeners() {
             
             currentBill = [];
             discountInput.value = 0;
-            advanceInput.value = 0;
-            
