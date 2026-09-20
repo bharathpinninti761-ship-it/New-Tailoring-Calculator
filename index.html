@@ -10,7 +10,10 @@
     <div class="app-container">
         <header>
             <h1>Tailoring Assistant 🧵</h1>
-            <button id="toggle-edit-btn" class="secondary-btn">✏️ Edit Services</button>
+            <div class="header-actions">
+                <button id="dark-mode-btn" class="secondary-btn">🌓 Dark Mode</button>
+                <button id="toggle-edit-btn" class="secondary-btn">✏️ Edit Services</button>
+            </div>
         </header>
 
         <!-- Edit Services Drawer -->
@@ -19,17 +22,17 @@
             <form id="add-service-form">
                 <input type="text" id="new-service-name" placeholder="Service Name (e.g., Designer Blouse)" required>
                 <input type="number" id="new-service-price" placeholder="Price (₹)" required min="0">
+                <input type="text" id="new-service-icon" placeholder="Emoji Icon (e.g., 👗, 👚, 🥻)" value="🧵">
                 <button type="submit" class="primary-btn">Add Service</button>
             </form>
             <ul id="edit-services-list"></ul>
         </div>
 
         <div class="main-layout">
-            <!-- Left Panel: Interactive items and Selection list -->
+            <!-- Left Panel -->
             <div class="billing-area">
                 <div class="card">
                     <h3>Tap to Add Items</h3>
-                    <!-- CRITICAL FIX: The JavaScript requires this exact id container to spawn the buttons -->
                     <div id="services-grid" class="grid"></div>
                 </div>
 
@@ -40,7 +43,7 @@
                 </div>
             </div>
 
-            <!-- Right Panel: Financial calculations overview -->
+            <!-- Right Panel -->
             <div class="summary-area">
                 <div class="card calculation-card">
                     <h3>Bill Summary</h3>
@@ -68,7 +71,7 @@
             </div>
         </div>
 
-        <!-- Historical Persistence Ledger -->
+        <!-- Income History Log -->
         <div class="card income-log-section">
             <div class="log-header">
                 <h3>📈 Income Log & History</h3>
@@ -94,7 +97,6 @@
         </div>
     </div>
 
-    <!-- Script loading placed securely at base of content execution loop -->
     <script src="script.js"></script>
 </body>
 </html>
