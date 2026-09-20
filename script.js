@@ -1,13 +1,13 @@
-// Default initial data if nothing is saved in local memory yet
+// Default initial data equipped with descriptive service emojis
 const defaultServices = [
-    { id: "s1", name: "Saree & Fall (with lining)", price: 350 },
-    { id: "s2", name: "Plain Blouse Stitched", price: 250 },
-    { id: "s3", name: "Designer Blouse", price: 600 },
-    { id: "s4", name: "Kurti / Kameez", price: 400 },
-    { id: "s5", name: "Salwar / Pant Stitched", price: 300 }
+    { id: "s1", name: "Saree & Fall (with lining)", price: 350, icon: "🥻" },
+    { id: "s2", name: "Plain Blouse Stitched", price: 250, icon: "👚" },
+    { id: "s3", name: "Designer Blouse", price: 600, icon: "✨" },
+    { id: "s4", name: "Kurti / Kameez", price: 400, icon: "👗" },
+    { id: "s5", name: "Salwar / Pant Stitched", price: 300, icon: "👖" }
 ];
 
-// App State Management - Safe Fallback check
+// App State Management - Safe Storage Lookups
 let services = JSON.parse(localStorage.getItem('tailor_services'));
 if (!services || !Array.isArray(services) || services.length === 0) {
     services = defaultServices;
@@ -16,6 +16,7 @@ if (!services || !Array.isArray(services) || services.length === 0) {
 
 let currentBill = [];
 let incomeLog = JSON.parse(localStorage.getItem('tailor_income_log')) || [];
+let isDarkMode = localStorage.getItem('tailor_dark_mode') === 'true';
 
 // DOM Elements
 const servicesGrid = document.getElementById('services-grid');
@@ -23,6 +24,7 @@ const currentItemsList = document.getElementById('current-items-list');
 const editServicesSection = document.getElementById('edit-services-section');
 const editServicesList = document.getElementById('edit-services-list');
 const toggleEditBtn = document.getElementById('toggle-edit-btn');
+const darkModeBtn = document.getElementById('dark-mode-btn');
 const addServiceForm = document.getElementById('add-service-form');
 
 const discountInput = document.getElementById('discount-input');
@@ -38,8 +40,13 @@ const clearHistoryBtn = document.getElementById('clear-history-btn');
 const incomeLogBody = document.getElementById('income-log-body');
 const totalEarningsVal = document.getElementById('total-earnings-val');
 
-// Initialize the Application
+// Initialize the Application State
 function init() {
+    // Apply Dark Mode Preference instantly if active
+    if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+    }
+    
     renderServicesPanel();
     renderEditServicesList();
     renderBill();
@@ -47,7 +54,7 @@ function init() {
     setupEventListeners();
 }
 
-// 1. Render the main grid interface your mom will tap on
+// 1. Render the main grid interface your mom will tap on (with images/icons)
 function renderServicesPanel() {
     if (!servicesGrid) return;
     servicesGrid.innerHTML = '';
@@ -55,6 +62,7 @@ function renderServicesPanel() {
         const div = document.createElement('div');
         div.className = 'service-tap-card';
         div.innerHTML = `
+            <div class="service-img-badge">${service.icon || '🧵'}</div>
             <div class="service-info">
                 <span class="service-name">${service.name}</span>
                 <span class="service-price">₹${service.price}</span>
@@ -66,7 +74,7 @@ function renderServicesPanel() {
     });
 }
 
-// 2. Render the service manager panel (add/delete backend options)
+// 2. Render the service manager panel
 function renderEditServicesList() {
     if (!editServicesList) return;
     editServicesList.innerHTML = '';
@@ -74,7 +82,7 @@ function renderEditServicesList() {
         const li = document.createElement('li');
         li.className = 'edit-list-item';
         li.innerHTML = `
-            <span>${service.name} - <strong>₹${service.price}</strong></span>
+            <span>${service.icon || '🧵'} ${service.name} - <strong>₹${service.price}</strong></span>
             <button class="danger-btn text-link" style="color:red; background:none; border:none; cursor:pointer;">❌ Remove</button>
         `;
         li.querySelector('button').addEventListener('click', () => removeServiceDefinition(service.id));
@@ -82,7 +90,7 @@ function renderEditServicesList() {
     });
 }
 
-// 3. Render the current working bill and perform mathematical totals
+// 3. Render current items bill
 function renderBill() {
     if (!currentItemsList) return;
     currentItemsList.innerHTML = '';
@@ -97,7 +105,7 @@ function renderBill() {
             li.className = 'bill-item';
             li.innerHTML = `
                 <div>
-                    <strong>${item.name}</strong><br>
+                    <strong>${item.icon || '🧵'} ${item.name}</strong><br>
                     <small>₹${item.price} x ${item.quantity}</small>
                 </div>
                 <div class="item-qty-controls">
@@ -121,7 +129,7 @@ function renderBill() {
     totalVal.innerText = `₹${finalBalance}`;
 }
 
-// 4. Render and calculate Income Logs
+// 4. Render and calculate Income Logs Ledger
 function renderIncomeLog() {
     if (!incomeLogBody) return;
     incomeLogBody.innerHTML = '';
@@ -156,7 +164,6 @@ function renderIncomeLog() {
     totalEarningsVal.innerText = `₹${runningEarningsTotal}`;
 }
 
-// Interactivity functions
 function addItemToBill(service) {
     const existingItem = currentBill.find(item => item.id === service.id);
     if (existingItem) {
@@ -190,8 +197,17 @@ function deleteLogEntry(index) {
     }
 }
 
-// Setup System Listeners
+// Setup Event Listeners
 function setupEventListeners() {
+    // Dark Mode Toggle Logic Engagement Loop
+    if (darkModeBtn) {
+        darkModeBtn.addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            localStorage.setItem('tailor_dark_mode', isDarkMode);
+        });
+    }
+
     if (toggleEditBtn && editServicesSection) {
         toggleEditBtn.addEventListener('click', () => {
             const isHidden = editServicesSection.classList.toggle('hidden');
@@ -204,11 +220,13 @@ function setupEventListeners() {
             e.preventDefault();
             const nameInput = document.getElementById('new-service-name');
             const priceInput = document.getElementById('new-service-price');
+            const iconInput = document.getElementById('new-service-icon');
 
             const newService = {
                 id: 'custom_' + Date.now(),
                 name: nameInput.value,
-                price: parseFloat(priceInput.value) || 0
+                price: parseFloat(priceInput.value) || 0,
+                icon: iconInput.value || "🧵"
             };
 
             services.push(newService);
@@ -216,6 +234,7 @@ function setupEventListeners() {
             
             nameInput.value = '';
             priceInput.value = '';
+            iconInput.value = '🧵';
             
             renderServicesPanel();
             renderEditServicesList();
@@ -243,83 +262,84 @@ function setupEventListeners() {
 
             let subtotal = 0;
             const summaryArr = currentBill.map(item => {
-                subtotal += item.price * item.quantity;
-                return `${item.name} (${item.quantity})`;
-            });
-
-            const discount = parseFloat(discountInput.value) || 0;
-            const advance = parseFloat(advanceInput.value) || 0;
-            let balance = subtotal - discount - advance;
-            if (balance < 0) balance = 0;
-
-            const newLog = {
-                date: new Date().toLocaleDateString(),
-                itemsSummary: summaryArr.join(', '),
-                subtotal: subtotal,
-                discount: discount,
-                advance: advance,
-                balance: balance
-            };
-
-            incomeLog.push(newLog);
-            localStorage.setItem('tailor_income_log', JSON.stringify(incomeLog));
-            
-            currentBill = [];
-            discountInput.value = 0;
-            advanceInput.value = 0;
-                        renderBill();
-            renderIncomeLog();
-            alert("🎉 Bill successfully logged to history and saved!");
+        const summaryArr = currentBill.map(item => {
+            subtotal += item.price * item.quantity;
+            return `${item.name} (${item.quantity})`;
         });
-    }
 
-    if (shareBillBtn) {
-        shareBillBtn.addEventListener('click', () => {
-            if (currentBill.length === 0) {
-                alert("No data items generated yet to compile a text summary.");
-                return;
-            }
-            
-            let subtotal = 0;
-            let textSummary = `--- Tailor Bill Receipt ---\n`;
-            currentBill.forEach(item => {
-                subtotal += item.price * item.quantity;
-                textSummary += `• ${item.name} x${item.quantity}: ₹${item.price * item.quantity}\n`;
-            });
-            
-            const disc = parseFloat(discountInput.value) || 0;
-            const adv = parseFloat(advanceInput.value) || 0;
-            let bal = subtotal - disc - adv;
-            if (bal < 0) bal = 0;
+        const discount = parseFloat(discountInput.value) || 0;
+        const advance = parseFloat(advanceInput.value) || 0;
+        let balance = subtotal - discount - advance;
+        if (balance < 0) balance = 0;
 
-            textSummary += `-------------------------\n`;
-            textSummary += `Subtotal: ₹${subtotal}\n`;
-            if(disc > 0) textSummary += `Discount: -₹${disc}\n`;
-            if(adv > 0) textSummary += `Advance Paid: -₹${adv}\n`;
-            textSummary += `Balance Due: ₹${bal}\n`;
-            textSummary += `Thank you! ✨`;
+        const newLog = {
+            date: new Date().toLocaleDateString(),
+            itemsSummary: summaryArr.join(', '),
+            subtotal: subtotal,
+            discount: discount,
+            advance: advance,
+            balance: balance
+        };
 
-            if (navigator.share) {
-                navigator.share({ title: 'Tailoring Receipt', text: textSummary })
-                    .catch(err => console.log(err));
-            } else {
-                navigator.clipboard.writeText(textSummary);
-                alert("📋 Summary copied to your clipboard! You can paste it right into WhatsApp.");
-            }
-        });
-    }
-
-    if (clearHistoryBtn) {
-        clearHistoryBtn.addEventListener('click', () => {
-            if (confirm("Are you sure you want to permanently clear the whole history summary logs? This cannot be undone.")) {
-                incomeLog = [];
-                localStorage.removeItem('tailor_income_log');
-                renderIncomeLog();
-            }
-        });
-    }
+        incomeLog.push(newLog);
+        localStorage.setItem('tailor_income_log', JSON.stringify(incomeLog));
+        
+        currentBill = [];
+        discountInput.value = 0;
+        advanceInput.value = 0;
+        
+        renderBill();
+        renderIncomeLog();
+        alert("🎉 Bill successfully logged to history and saved!");
+    });
 }
 
-// Fire up calculations on initial execution loop
-init();
+if (shareBillBtn) {
+    shareBillBtn.addEventListener('click', () => {
+        if (currentBill.length === 0) {
+            alert("No data items generated yet to compile a text summary.");
+            return;
+        }
+        
+        let subtotal = 0;
+        let textSummary = `--- Tailor Bill Receipt ---\n`;
+        currentBill.forEach(item => {
+            subtotal += item.price * item.quantity;
+            textSummary += `• ${item.name} x${item.quantity}: ₹${item.price * item.quantity}\n`;
+        });
+        
+        const disc = parseFloat(discountInput.value) || 0;
+        const adv = parseFloat(advanceInput.value) || 0;
+        let bal = subtotal - disc - adv;
+        if (bal < 0) bal = 0;
 
+        textSummary += `-------------------------\n`;
+        textSummary += `Subtotal: ₹${subtotal}\n`;
+        if(disc > 0) textSummary += `Discount: -₹${disc}\n`;
+        if(adv > 0) textSummary += `Advance Paid: -₹${adv}\n`;
+        textSummary += `Balance Due: ₹${bal}\n`;
+        textSummary += `Thank you! ✨`;
+
+        if (navigator.share) {
+            navigator.share({ title: 'Tailoring Receipt', text: textSummary })
+                .catch(err => console.log(err));
+        } else {
+            navigator.clipboard.writeText(textSummary);
+            alert("📋 Summary copied to your clipboard! You can paste it right into WhatsApp.");
+        }
+    });
+}
+
+if (clearHistoryBtn) {
+    clearHistoryBtn.addEventListener('click', () => {
+        if (confirm("Are you sure you want to permanently clear the whole history summary logs? This cannot be undone.")) {
+            incomeLog = [];
+            localStorage.removeItem('tailor_income_log');
+            renderIncomeLog();
+        }
+    });
+}
+}
+
+// Run Application Execution
+init();
