@@ -13,7 +13,7 @@
     --input-bg: #ffffff;
 }
 
-/* Dark Mode Theme overrides */
+/* 🌟 THIS IS THE CRITICAL DARK MODE TRANSLATION LAYER 🌟 */
 body.dark-mode {
     --primary: #6366f1;
     --primary-hover: #4f46e5;
@@ -101,7 +101,7 @@ header h1 {
     gap: 14px;
 }
 
-/* Service Tap Cards with Integrated Visual Layout */
+/* Service Tap Cards */
 .service-tap-card {
     background: var(--secondary);
     border: 1px solid var(--border);
@@ -168,7 +168,7 @@ header h1 {
     border: 1px solid var(--border);
 }
 
-/* Form Fields */
+/* Input Fields */
 input[type="text"], input[type="number"] {
     width: 100%;
     box-sizing: border-box;
@@ -194,7 +194,7 @@ input[type="text"], input[type="number"] {
     }
 }
 
-/* Buttons UI */
+/* Button Layouts */
 .primary-btn, .secondary-btn, .danger-btn {
     padding: 10px 16px;
     border-radius: 6px;
@@ -225,7 +225,6 @@ input[type="text"], input[type="number"] {
     font-size: 0.85rem;
 }
 
-/* Active Bill Item list structure */
 .bill-list {
     list-style: none;
     padding: 0;
@@ -260,7 +259,6 @@ input[type="text"], input[type="number"] {
     cursor: pointer;
 }
 
-/* Summary Layout Calculations */
 .calc-row {
     display: flex;
     justify-content: space-between;
